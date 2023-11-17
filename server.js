@@ -9,6 +9,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 const groupChatHandler = require('./groupChatHandler');
+const privateChatHandler = require('./privateChatHandler');
 
 const PORT = process.env.PORT || 3000;
 let users = {};
@@ -20,5 +21,6 @@ app.get('/', (req, res) => {
 
 // Group chat handler
 groupChatHandler(io, users, chatRooms);
+privateChatHandler(io, users);
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
