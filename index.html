@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat App</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form id="form" action="">
+    <input id="input" autocomplete="off" /><button>Send</button>
+  </form>
+  <script>
+    const socket = io();
+
+    $('form').submit(function(e) {
+      e.preventDefault();
+      socket.emit('group message', { room: 'general', message: $('#input').val() });
+      $('#input').val('');
+      return false;
+    });
+
+    socket.on('message', function(msg) {
+      $('#messages').append($('<li>').text(msg));
+    });
+
+    // Join a room
+    socket.emit('join room', { username: 'User1', room: 'general' });
+
+    // Listen for individual messages
+    socket.on('individual message', function({ sender, message }) {
+      $('#messages').append($('<li>').text(`${sender}: ${message}`));
+    });
+  </script>
+</body>
+</html>
