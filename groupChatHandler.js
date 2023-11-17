@@ -4,57 +4,57 @@
 module.exports = function (io, users, chatRooms) {
     io.on('connection', (socket) => {
       console.log('A user connected');
-  
+
       socket.on('join room', ({ username, room }) => {
+        if (!username || !room) {
+          socket.emit('error', 'Username and room are required');
+          return;
+        }
+
         users[socket.id] = { username, room };
         socket.join(room);
-        socket.to(room).emit('message', `${username} has joined the chat`);
-  
+
+        // Welcome the current user
+        socket.emit('message', `Welcome to the chat, ${username}!`);
+
+        // Broadcast when a user connects
+        socket.broadcast.to(room).emit('message', `${username} has joined the chat`);
+
         if (!chatRooms[room]) {
-          chatRooms[room] = { users: [], admin: socket.id };
+          chatRooms[room] = { users: [], admin: socket.id, messages: [] };
         }
         chatRooms[room].users.push(socket.id);
-  
-        // Notify the user about the room details
+
+        // Send room details and history
         socket.emit('room details', chatRooms[room]);
       });
-  
+
       socket.on('group message', ({ room, message }) => {
-        socket.to(room).emit('message', `${users[socket.id].username}: ${message}`);
-      });
-  
-      socket.on('private message', ({ recipientId, message }) => {
-        if (users[recipientId] && users[recipientId].room === users[socket.id].room) {
-          io.to(recipientId).emit('private message', {
-            sender: users[socket.id].username,
-            message: message
-          });
+        if (!users[socket.id] || !message) {
+          socket.emit('error', 'Invalid message or user not in a room');
+          return;
         }
+
+        const userMessage = `${users[socket.id].username}: ${message}`;
+        chatRooms[room].messages.push(userMessage); // Save to history
+        io.in(room).emit('message', userMessage);
       });
-  
-      socket.on('list users', ({ room }) => {
-        let userList = Object.values(users).filter(user => user.room === room);
-        socket.emit('user list', userList.map(user => user.username));
-      });
-  
-      socket.on('leave room', () => {
-        if (users[socket.id]) {
-          const room = users[socket.id].room;
-          socket.leave(room);
-          socket.to(room).emit('message', `${users[socket.id].username} has left the chat`);
-          chatRooms[room].users = chatRooms[room].users.filter(id => id !== socket.id);
-          delete users[socket.id];
-        }
-      });
-  
+
       socket.on('disconnect', () => {
         if (users[socket.id]) {
-          console.log(`${users[socket.id].username} disconnected`);
-          const room = users[socket.id].room;
-          chatRooms[room].users = chatRooms[room].users.filter(id => id !== socket.id);
+          const user = users[socket.id];
+          console.log(`${user.username} disconnected`);
+
+          // Broadcast when a user leaves
+          socket.broadcast.to(user.room).emit('message', `${user.username} has left the chat`);
+
+          // Remove user from room
+          if (chatRooms[user.room]) {
+            chatRooms[user.room].users = chatRooms[user.room].users.filter(id => id !== socket.id);
+          }
+
           delete users[socket.id];
         }
       });
     });
-  };
-  
+};
