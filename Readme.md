@@ -40,16 +40,18 @@ Before starting, ensure you have the following installed on your system. There a
 
 **Setting up the Frontend**
 - Navigate to the client directory.
-Open the .env file and set REACT_APP_BACKEND_URL to the URL of your running backend server.
-Initiate the React frontend:
-bash
-Copy code
-npm start
+- Open the .env file and set REACT_APP_BACKEND_URL to the URL of your running backend server.
+- Initiate the React frontend:
+- bash
+- Copy code
+- npm start
 
 **Setting up the Database**
-npm install mysql
+  ```bash
+  npm install mysql
+  ```
 
 **Accessing the Application**
-Open a web browser and navigate to http://localhost:3000.
+- Open a web browser and navigate to http://localhost:3000.
 
 Congratulations! You have successfully deployed ChatMate. Enjoy the features of real-time communication and secure messaging. For any issues, consult the error handling section in the technical documentation or contact the ChatMate support team.
