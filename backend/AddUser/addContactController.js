@@ -43,7 +43,6 @@ function addFriend(userId, friendUserId, callback) {
     });
 }
 
-// Example usage
 db.connectToDatabase(); // Connect to the database
 
 addFriend('userId1', 'friendUserId1', (result) => {
