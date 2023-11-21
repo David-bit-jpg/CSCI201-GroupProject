@@ -3,6 +3,8 @@ const numCPUs = require('os').cpus().length;
 const express = require("express");
 const privateChatHandler = require('./backend/chat/privateChatHandler.js');
 const groupChatHandler = require('./backend/chat/groupChatHandler.js');
+const addFriend = require('./backend/chat/addContactHandler.js'); 
+
 const db = require('./db'); // Adjust the path based on your project structure
 // db.connectToDatabase();
 
@@ -78,6 +80,21 @@ else {
       } else {
           res.status(400).send('Must select people to start the conversation');
       }
+  });
+  app.post('/api/addFriend', (req, res) => {
+    const { userId, friendUserId } = req.body;
+
+    if (!userId || !friendUserId) {
+        return res.status(400).json({ success: false, message: 'Missing userId or friendUserId in the request body' });
+    }
+
+    addFriend(userId, friendUserId, (result) => {
+        if (result) {
+            res.json({ success: true, message: 'Friend added successfully' });
+        } else {
+            res.json({ success: false, message: 'Failed to add friend' });
+        }
+    });
   });
 
   // Start Backend Port
