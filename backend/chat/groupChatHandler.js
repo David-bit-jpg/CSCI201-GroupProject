@@ -1,5 +1,29 @@
 // handling group chat fucnctions
+const db = require('../db');
 
+function sendGroupMessage(userId, roomId, message, callback) {
+  const insertMessageQuery = `INSERT INTO Chat (userID, roomID, messageContent) VALUES (${userId}, ${roomId}, '${message}')`;
+
+  db.performQuery(insertMessageQuery, (error, insertResult) => {
+      if (error) {
+          console.error('Error sending group message:', error);
+          return callback(false);
+      }
+      return callback(insertResult.affectedRows > 0);
+  });
+}
+
+function getGroupChatHistory(roomId, callback) {
+  const getMessagesQuery = `SELECT * FROM Chat WHERE roomID = ${roomId} ORDER BY timeStamp`;
+
+  db.performQuery(getMessagesQuery, (error, messages) => {
+      if (error) {
+          console.error('Error retrieving group chat history:', error);
+          return callback(null);
+      }
+      return callback(messages);
+  });
+}
 
 module.exports = function (io, users, chatRooms) {
     io.on('connection', (socket) => {
@@ -31,14 +55,21 @@ module.exports = function (io, users, chatRooms) {
 
       socket.on('group message', ({ room, message }) => {
         if (!users[socket.id] || !message) {
-          socket.emit('error', 'Invalid message or user not in a room');
-          return;
+            socket.emit('error', 'Invalid message or user not in a room');
+            return;
         }
 
-        const userMessage = `${users[socket.id].username}: ${message}`;
-        chatRooms[room].messages.push(userMessage); // Save to history
-        io.in(room).emit('message', userMessage);
-      });
+        const userId = users[socket.id].userId; // Assuming you have userId
+        dbHandler.sendGroupMessage(userId, room, message, (success) => {
+            if (!success) {
+                console.error('Error storing message in the database');
+                return;
+            }
+            const userMessage = `${users[socket.id].username}: ${message}`;
+            chatRooms[room].messages.push(userMessage); // Save to history
+            io.in(room).emit('message', userMessage);
+        });
+    });
 
       socket.on('disconnect', () => {
         if (users[socket.id]) {

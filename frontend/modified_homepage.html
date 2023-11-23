@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatMate Home</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+  }
+  .sidebar {
+  /* ...existing styles... */
+  position: absolute; /* Changed from fixed to absolute */
+  z-index: 100; /* Ensure it's above other content */
+  left: -100%; /* Hide by default */
+  transition: left 0.3s;
+} 
+  .sidebar h2 {
+    margin-top: 0;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  .sidebar ul li {
+    padding: 10px;
+    border-bottom: 1px solid #397d39;
+  }
+  .content {
+    margin-left: 250px;
+    padding: 20px;
+    margin: auto; /* Center the content */
+    width: 80%; /* Define a width for the content */
+    position: relative;
+  }
+  .content header {
+    background: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .content header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .message-list {
+    list-style: none;
+    padding: 0;
+  }
+  .message-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+  }
+  .message-list img {
+    border-radius: 50%;
+  }
+  .message-list .message-content {
+    margin-left: 10px;
+  }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hide by default */
+    transition: left 0.3s;
+  }
+  
+  .sidebar.visible {
+    left: 0; /* Show when class 'visible' is added */
+  }
+  
+  .content {
+    transition: margin-left 0.3s;
+  }
+  
+  .content.with-sidebar {
+    margin-left: 250px; /* Add margin when sidebar is visible */
+  }
+</style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="menu">
+      <h2>Menu</h2>
+      <ul>
+        <li><button onclick="window.location.href='home.html'">Home</button></li>
+        <li><button onclick="window.location.href='new_conversation.html'">New Conversation</button></li>
+        <li><button onclick="window.location.href='contacts.html'">Contacts</button></li>
+        <li><button onclick="window.location.href='add_contact.html'">Add New Contact</button></li>
+        <li><button onclick="window.location.href='settings.html'">Settings</button></li>
+      </ul>
+    </div>
+  </div>
+
+<div class="content">
+  <header>
+    <button id="menu-btn">&#9776;</button>
+    <h1>Messages</h1>
+    <a href="frontend/addContact.html"><button id="add-contact-btn"></a>&#43;</button>
+  </header>
+  <ul class="message-list">
+    <li>
+      <div class="message-content">
+        <h4>Max</h4>
+        <p>blah blah blah blah blah...</p>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<script>
+  // JavaScript to toggle the sidebar
+  document.getElementById('menu-btn').addEventListener('click', function() {
+    var sidebar = document.querySelector('.sidebar'); // Corrected to querySelector
+    sidebar.classList.toggle('visible');
+
+  });
+
+  // JavaScript for the add contact button
+  document.getElementById('add-contact-btn').addEventListener('click', function() {
+    window.location.href = 'frontend/addContact.html'; // Change 'add-contact.html' to your desired URL
+  });
+</script>
+
+
+</body>
+</html>
