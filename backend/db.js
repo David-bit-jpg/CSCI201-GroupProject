@@ -1,14 +1,21 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
+const { Client } = require('ssh2');
 require('dotenv').config();
+const sshClient = new Client();
 
+// Initial MySQL connection config
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  port: process.env.DB_PORT
 });
 
+
+
 const connectToDatabase = () => {
+  console.log(process.env.DB_PORT)
   connection.connect((error) => {
     if (error) {
       console.error('Error connecting to the database:', error);
@@ -23,17 +30,23 @@ const closeConnection = () => {
   console.log('Connection closed');
 };
 
-const performQuery = (query, callback) => {
-  connection.query(query, (error, results, fields) => {
-    if (error) {
-      console.error('Error executing query:', error);
-      callback(error, null);
-    } else {
-      console.log('Query results:', results);
-      callback(null, results);
-    }
+const performQuery = (query, values) => {
+  return new Promise((resolve, reject) => {
+    connection.query(query, values, (error, results, fields) => {
+      if (error) {
+        console.error('Error executing query:', error);
+        reject(error);
+      } else {
+        console.log('Query successful. Results:', results);
+        resolve(results);
+        console.log('Promise resolved');
+
+      }
+    });
   });
 };
+
+
 
 module.exports = {
   connectToDatabase,

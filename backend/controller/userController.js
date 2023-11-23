@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
-const db = require("../db");
+const {connectToDatabase, closeConnection, performQuery} = require("../db");
 const secretKey = process.env.JWT_SECRET; // Make sure to set this in your .env file
 
-class UserController {
+class userController {
   async validateUser(req, res) {
     const { username, password } = req.body;
 
@@ -15,7 +15,7 @@ class UserController {
     const selectValues = [username, password];
 
     try {
-      const results = await db.query(selectQuery, selectValues);
+      const results = await db.performQuery(selectQuery, selectValues);
 
       if (results.length > 0) {
         // User found, credentials are valid, generate a JWT token
@@ -34,7 +34,8 @@ class UserController {
   }
 
   async createUser(req, res) {
-    const { username, password, firstName, lastName } = req.body;
+    console.log('hereeee');
+    const { username, password, firstName, lastName, email, jwt_token } = req.body;
   
     if (!username || !password || !firstName || !lastName) {
       return res.status(400).json({ error: 'All fields are required for registration' });
@@ -42,24 +43,25 @@ class UserController {
   
     try {
       // Check if the username already exists
-      const checkUsernameQuery = 'SELECT * FROM users WHERE username = ?';
-      const existingUser = await db.query(checkUsernameQuery, [username]);
-  
+      const checkUsernameQuery = 'SELECT * FROM User WHERE username = ?';
+      const existingUser = await performQuery(checkUsernameQuery, [username]);
+
       if (existingUser.length > 0) {
         return res.status(409).json({ error: 'Username already exists' });
       }
-  
       // If the username is unique, proceed with user registration
-      const insertQuery = 'INSERT INTO users (username, password, first_name, last_name) VALUES (?, ?, ?, ?)';
-      const values = [username, password, firstName, lastName];
+      const insertQuery = 'INSERT INTO User (username, password, fname, lname, email, jwt_tokens) VALUES (?, ?, ?, ?, ?, ?)';
+      const values = [username, password, firstName, lastName, email, jwt_token];
   
-      await db.query(insertQuery, values);
-  
+      await performQuery(insertQuery, values);
+
+      console.log("we made it here")
       // User registered successfully
-      return res.json({ success: true, message: 'User registered successfully' });
+      return { success: true, message: 'User registered successfully' };
+     
     } catch (error) {
       console.error('Error executing registration query:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      return { error: 'Internal Server Error' };
     }
   }
   
@@ -80,4 +82,4 @@ class UserController {
   }
 }
 
-module.exports = new UserController();
+module.exports = new userController();

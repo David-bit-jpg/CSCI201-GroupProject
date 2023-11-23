@@ -1,6 +1,9 @@
 // handling private chat
+require("dotenv").config();
+const {connectToDatabase, closeConnection, performQuery} = require("../db");
 
-module.exports = function (io, users) {
+class privateChatHandler {
+  async startPrivateChat(){
     io.on('connection', (socket) => {
       console.log('User connected for private chat');
   
@@ -33,4 +36,6 @@ module.exports = function (io, users) {
       });
     });
   };
-  
+}
+
+module.exports = new privateChatHandler();
