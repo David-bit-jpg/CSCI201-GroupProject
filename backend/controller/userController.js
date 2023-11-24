@@ -163,7 +163,7 @@ class userController {
   }
   
 
-
+  // add a logout button
   async logoutUser(req, res) {
     const { error } = await supabase.auth.signOut();
     if (error){

@@ -6,6 +6,7 @@ const privateChatHandler = require("./chat/privateChatHandler");
 const groupChatHandler = require("./chat/groupChatHandler");
 // const addFriend = require('AddUser/addContactHandler'); 
 const userController = require("./controller/userController");
+const chatHandler = require("./chat/chatHandler");
 
 
 require("dotenv").config();
@@ -70,7 +71,7 @@ require("dotenv").config();
   app.post("/api/addContact", async (req, res) => {
     try {
         console.log("in this");
-        const data = await userController.addContact(req);
+        const data = await chatHandler.addContact(req);
         if (data.status){
           return res.status(200).json(data);
         }
@@ -80,6 +81,21 @@ require("dotenv").config();
             error: error.message || "An error occurred.",
         });
     }
+});
+
+app.post("/api/createChat", async (req, res) => {
+  try {
+      console.log("in this");
+      const data = await chatHandler.createChat(req);
+      if (data.success){
+        return res.status(200).json(data);
+      }
+  } catch (error) {
+      res.status(500).json({
+          status: "internal server error",
+          error: error.message || "An error occurred.",
+      });
+  }
 });
 
 
