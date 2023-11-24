@@ -6,33 +6,24 @@ const privateChatHandler = require("./chat/privateChatHandler");
 const groupChatHandler = require("./chat/groupChatHandler");
 // const addFriend = require('AddUser/addContactHandler'); 
 const userController = require("./controller/userController");
-// const {connectToDatabase, closeConnection, performQuery} = require("./db");
-// db.connectToDatabase();
+
 
 require("dotenv").config();
 
-// if (cluster.isMaster) {
-//   console.log(`Master ${process.pid} is running`);
-
-//   // Fork workers.
-//   for (let i = 0; i < numCPUs; i++) {cle
-//       cluster.fork();
-//   }
-
-//   cluster.on('exit', (worker, code, signal) => {
-//       console.log(`Worker ${worker.process.pid} died`);
-//   });
-// } 
-// else {
   const app = express();
   const port = process.env.PORT || 3000;
   app.use(cors());
 
 
   app.use(express.json());
-
-
-
+  
+  if (cluster.isMaster) {
+    // Fork workers
+    for (let i = 0; i < numCPUs; i++) {
+      cluster.fork();
+    }
+  } 
+  else {
 
   app.post("/api/createUser", async (req, res) => {
     try {
@@ -74,7 +65,23 @@ require("dotenv").config();
             error: error,
           });
         });
-    });
+  });
+
+  app.post("/api/addContact", async (req, res) => {
+    try {
+        console.log("in this");
+        const data = await userController.addContact(req);
+        if (data.status){
+          return res.status(200).json(data);
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "internal server error",
+            error: error.message || "An error occurred.",
+        });
+    }
+});
+
 
   // // app.post('/api/chat', (req, res) => {
   // //     const { participants } = req.body; // assuming participants is an array of user IDs
@@ -106,5 +113,6 @@ require("dotenv").config();
   app.listen(port, () => {
     console.log(`Server listening on the port  ${port}`);
   });
+}
 
 
