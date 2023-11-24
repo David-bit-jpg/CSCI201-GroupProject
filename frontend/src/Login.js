@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Make sure to install axios using `npm install axios` or `yarn add axios`
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState(null);
+  const navigate = useNavigate(); // useNavigate hook for programmatic navigation
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,6 +21,13 @@ const Login = () => {
       const result = response.data;
 
       setLoginStatus(result.data);
+
+      if (result.data) {
+        // If login is successful, set the login status and redirect to "/addContact"
+        navigate('/addContact');
+      } else {
+        setLoginStatus(false);
+      }
     } catch (error) {
       console.error('Error during login:', error);
       setLoginStatus(false);

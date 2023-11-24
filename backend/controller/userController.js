@@ -65,7 +65,7 @@ class userController {
 
   
 
-// things to add  (ADDING SAME CONTACT TWICE!!!)
+// things to add  (ADDING SAME CONTACT TWICE!!!, where to store all the contact information?)
   async addContact(req, res) {
     try {
       const { username, email, fname, lname } = req.body;
