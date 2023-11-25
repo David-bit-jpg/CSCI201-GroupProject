@@ -83,10 +83,41 @@ require("dotenv").config();
     }
 });
 
+
+app.get("/api/getContacts", async (req, res) => {
+  try {
+      console.log("in this");
+      const data = await userController.getContacts(req);
+      if (data.success){
+        return res.status(200).json(data);
+      }
+  } catch (error) {
+      res.status(500).json({
+          status: "internal server error",
+          error: error.message || "An error occurred.",
+      });
+  }
+});
+
 app.post("/api/createChat", async (req, res) => {
   try {
       console.log("in this");
       const data = await chatHandler.createChat(req);
+      if (data.success){
+        return res.status(200).json(data);
+      }
+  } catch (error) {
+      res.status(500).json({
+          status: "internal server error",
+          error: error.message || "An error occurred.",
+      });
+  }
+});
+
+app.post("/api/sendChat", async (req, res) => {
+  try {
+      console.log("in this");
+      const data = await chatHandler.sendChat(req);
       if (data.success){
         return res.status(200).json(data);
       }

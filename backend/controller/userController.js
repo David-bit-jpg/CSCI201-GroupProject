@@ -161,6 +161,44 @@ class userController {
       return res.status(500).json({ msg: "server error" });
     }
   }
+
+  async getContacts(req, res){
+    const { email } = req.body;
+
+    let { data: friends, error } = await supabase
+    .from('User')
+    .select('friend_ids')
+    .ilike('email', email)
+
+    if (error){
+      return {status: false}
+    }
+    const friendsArr = friends[0].friend_ids;
+    let arrOfInfo = [];
+    for (const friend of friendsArr){
+      console.log(friend)
+      let { data: info, error } = await supabase
+      .from('User')
+      .select('username, fname, lname, email')
+      .eq('user_id', friend)
+
+        const userObject = {
+          username: info[0].username,
+          fname: info[0].fname,
+          lname: info[0].lname,
+          email: info[0].email,
+      };
+      arrOfInfo.push(userObject);
+      
+
+    }
+    return {success: true, data: arrOfInfo}
+
+
+
+
+
+  }
   
 
   // add a logout button

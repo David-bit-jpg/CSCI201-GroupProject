@@ -71,10 +71,12 @@ class chatHandler {
                 if (userError) {
                     console.error(`Error updating user ${userId}: ${userError.message}`);
                 }
-
-                userData.push(chatData[0].chat_id)
+                console.log(userData)
+                const userArr = userData[0].user_id || [];
+                console.log(userArr)
+                userArr.push(chatData[0].chat_id)
                 const { response, error: updateError1 } = await supabase.from('User')
-                .update({ chatids: userData })
+                .update({ "chatids": userArr })
                 .eq('user_id', userId);
 
                 if (updateError1){
@@ -101,19 +103,68 @@ class chatHandler {
 
     async sendChat(req, res) {
 
+        
+
         // add to chat database
-        const {sender, reciever, message} = req.body;
+        const {sender, receivers, message} = req.body;
+        console.log(sender)
+        // const { findSender, errorSend } = await supabase
+        //         .from('User')
+        //         .select('user_id')
+        //         .ilike('username', sender);
+        let { data: findSender, errorSend } = await supabase
+        .from('User')
+        .select("user_id")
+        .ilike("username", sender)
+        
 
+        if (errorSend){
+            return {success: false, error: errorSend.message}
+        }
 
+        const recievArr = [];
+        console.log(receivers)
+        for (const receiver of receivers) {
+            console.log(receiver)
+            let { data: findReceiver, errRec } = await supabase
+                .from('User')
+                .select("user_id")
+                .ilike("username", receiver)
+          
+
+            if (errRec){
+                return {success: false, error: errRec.message}
+            }
+            console.log(findReceiver)
+
+            recievArr.push(findReceiver[0].user_id);
+        }
+
+        console.log(recievArr)
+
+        const { data, error } = await supabase
+        .from('Chat')
+        .insert([
+            { "userID": findSender[0].user_id, "messageContent": message, "userIDs": recievArr},
+        ])
+        .select()
+
+        if (error){
+            return {success: false, error: error.message}
+        }
+
+        return {success: true, message: "added chat"}
 
     }
 
     async getChat(req, res){
-    
+        
+
     }
 
     async getListOfChats(req, res){
-    
+        
+
     }
 
 
