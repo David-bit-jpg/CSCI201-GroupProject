@@ -58,11 +58,12 @@ const SelectContactsPage = () => {
       });
 
       const data = await response.json();
-
+      console.log(data)
       if (data.success) {
         console.log('Chat created successfully');
+        console.log(data.chatData)
         // Redirect to the chat page or do other actions as needed
-        navigate('/ChatWindow', { state: { chatInfo: data.chatInfo } });
+        navigate('/ChatWindow', { state: { chatData: data.chatData } });
       } else {
         console.error('Failed to create chat:', data.error);
       }

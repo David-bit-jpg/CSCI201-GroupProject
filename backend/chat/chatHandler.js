@@ -5,12 +5,12 @@ class chatHandler {
         const resultArray = [];
         console.log(selectedUsers)
         // Use Promise.all to wait for all asynchronous operations to complete
-        await Promise.all(selectedUsers.map(async (username) => {
+        await Promise.all(selectedUsers.map(async (email) => {
             // Query the database
             const { data, error } = await supabase
                 .from("User")
                 .select('user_id, fname, lname, email')
-                .ilike('username', username);
+                .ilike('email', email);
 
             if (error) {
                 console.error(`Error querying Supabase for ${username}: ${error.message}`);
@@ -20,13 +20,13 @@ class chatHandler {
 
             if (data.length > 0) {
                 const userObject = {
-                    username: username,
+                    user_id: data[0].user_id,
                     fname: data[0].fname,
                     lname: data[0].lname,
                     email: data[0].email,
                 };
                 const item = {
-                    key: data[0].user_id,
+                    key: data[0].email,
                     value: userObject,
                 }
                 resultArray.push(item);
@@ -60,7 +60,8 @@ class chatHandler {
             console.log("in this", resultArray)
             await Promise.all(resultArray.map(async (userObject) => {
                 console.log(userObject)
-                const userId = userObject.key;
+                const userId = userObject.value.user_id;
+
                 console.log(userId)
                 // Perform an update on the user table to add the chat ID to the chat_ids array
                 const { data: userData, error: userError } = await supabase
@@ -85,11 +86,8 @@ class chatHandler {
                 
             }));
 
-
-
-
             console.log("Data successfully inserted/updated into 'chats_info' table");
-            return { success: true };
+            return { success: true, chatData: chatData };
         } else {
             console.error("Unknown error during insert/update operation");
             return { success: false, error: "Unknown error" };
@@ -103,8 +101,8 @@ class chatHandler {
 
     async sendChat(req, res) {
         // add to chat database
-        const {sender, receivers, message} = req.body;
-        console.log(sender)
+        const {chat_id, sender, receivers, message} = req.body;
+        console.log("here", chat_id, sender,receivers, message )
         // const { findSender, errorSend } = await supabase
         //         .from('User')
         //         .select('user_id')
@@ -112,12 +110,14 @@ class chatHandler {
         let { data: findSender, errorSend } = await supabase
         .from('User')
         .select("user_id")
-        .ilike("username", sender)
+        .ilike("email", sender)
         
 
         if (errorSend){
             return {success: false, error: errorSend.message}
         }
+
+        console.log("this is " , findSender)
 
         const recievArr = [];
         console.log(receivers)
@@ -126,7 +126,7 @@ class chatHandler {
             let { data: findReceiver, errRec } = await supabase
                 .from('User')
                 .select("user_id")
-                .ilike("username", receiver)
+                .ilike("email", receiver)
           
 
             if (errRec){
@@ -137,14 +137,14 @@ class chatHandler {
             recievArr.push(findReceiver[0].user_id);
         }
 
-        console.log(recievArr)
 
         const { data, error } = await supabase
         .from('Chat')
         .insert([
-            { "userID": findSender[0].user_id, "messageContent": message, "userIDs": recievArr},
+            { "chatID": chat_id, "userID": findSender[0].user_id, "messageContent": message, "userIDs": recievArr},
         ])
         .select()
+        console.log("we added it" , data)
 
         if (error){
             return {success: false, error: error.message}

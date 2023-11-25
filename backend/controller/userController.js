@@ -62,7 +62,31 @@ class userController {
 
 
 
+  async getUserInfo(req, res){
 
+    try{
+      const {userEmail} = req.body;
+      console.log(userEmail)
+      let { data: info, error } = await supabase
+      .from('User')
+      .select('username, email, user_id')
+      .ilike('email', userEmail)
+      if (error){
+        return {success: false}
+      }
+      console.log(info)
+      return {success: true, data: info[0]}
+
+
+    }
+    catch(error){
+      return res.status(500);
+    }
+
+        
+        
+
+  }
   
 
 // things to add  (ADDING SAME CONTACT TWICE!!!, where to store all the contact information?)

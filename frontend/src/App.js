@@ -22,7 +22,7 @@ const App = () => {
           <Route path="/addContact" element={<AddContactForm />} />
           <Route path="/getContacts" element={<ContactList />} />
           <Route path="/select-contacts" element={<SelectContactsPage />} />
-          <Route path="/makeChat" element={<ChatWindow />} />
+          <Route path="/ChatWindow" element={<ChatWindow />} />
 
 
           {/* <Route path="/crud" element={<CRUD />} /> */}
