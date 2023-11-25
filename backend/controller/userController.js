@@ -195,9 +195,6 @@ class userController {
     return {success: true, data: arrOfInfo}
 
 
-
-
-
   }
   
 

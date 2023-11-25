@@ -3,27 +3,37 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './Login';
 import Register from './Register';
 import AddContactForm from './AddContactForm';
+import ContactList from './ContactsList';
+import SelectContactsPage from './SelectContactsPage';
+import ChatWindow from './ChatWindow';
+
+import { UserProvider } from './UserContext'; // Import UserProvider from UserContext
 
 const App = () => {
-  const isLoggedIn = false; // Set this to the logged-in status from your authentication logic
+  const isLoggedIn = false; // Replace this with your authentication logic
 
   return (
     <Router>
-      <Routes>
-        {/* <Route path="/logout" element={<RegisterPage />} /> */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/addContact" element={<AddContactForm />} />
+      <UserProvider> {/* Wrap the entire application with UserProvider */}
+        <Routes>
+          {/* <Route path="/logout" element={<RegisterPage />} /> */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/addContact" element={<AddContactForm />} />
+          <Route path="/getContacts" element={<ContactList />} />
+          <Route path="/select-contacts" element={<SelectContactsPage />} />
+          <Route path="/makeChat" element={<ChatWindow />} />
 
-        {/* <Route path="/crud" element={<CRUD />} /> */}
-        {/* <Route path="/edit/:id" element={<Edit/>} /> */}
 
-        <Route
+          {/* <Route path="/crud" element={<CRUD />} /> */}
+          {/* <Route path="/edit/:id" element={<Edit/>} /> */}
+
+          <Route
             path=""
             element={isLoggedIn ? <Navigate to="/addContact" /> : <Navigate to="/login" />}
           />
-
-      </Routes>
+        </Routes>
+      </UserProvider>
     </Router>
   );
 };

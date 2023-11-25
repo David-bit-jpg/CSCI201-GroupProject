@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Make sure to install axios using `npm install axios` or `yarn add axios`
+import { useUser } from './UserContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState(null);
+  const { setUser } = useUser();
+
   const navigate = useNavigate(); // useNavigate hook for programmatic navigation
 
 
@@ -23,8 +26,10 @@ const Login = () => {
       setLoginStatus(result.data);
 
       if (result.data) {
+        setUser(email); // Set the user email in the context
+
         // If login is successful, set the login status and redirect to "/addContact"
-        navigate('/addContact');
+        navigate('/getContacts');
       } else {
         setLoginStatus(false);
       }

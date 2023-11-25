@@ -102,9 +102,6 @@ class chatHandler {
     }
 
     async sendChat(req, res) {
-
-        
-
         // add to chat database
         const {sender, receivers, message} = req.body;
         console.log(sender)
@@ -158,12 +155,45 @@ class chatHandler {
     }
 
     async getChat(req, res){
+
+        
         
 
     }
 
     async getListOfChats(req, res){
+        const {email} = req.body;
+
+        let { data: findChats, errorSend } = await supabase
+        .from('User')
+        .select("chatids")
+        .ilike("email", email);
+
+        if (errorSend){
+            return {success: false, error: errorSend.error}
+        }
+        let arrOfChats = [];
+        const arrOfChatIds = findChats[0].chatids;
+        console.log(arrOfChatIds)
+        for (const chat of arrOfChatIds){
+            console.log(chat)
+            let { data: findPeople, errorSend } = await supabase
+            .from('chats_info')
+            .select("user_info")
+            .eq("chat_id", chat);
+            if (errorSend){
+                return {success:false, error: errorSend.error}
+            }
+
+            arrOfChats.push(findPeople[0].user_info);
+            
+            
+
+        }
         
+
+        return {success:true, response: arrOfChats}
+
 
     }
 
