@@ -184,9 +184,9 @@ app.post("/api/sendChat", async (req, res) => {
   }
 });
 
-app.get("/api/getChats", async (req, res) => {
+app.post("/api/getChats", async (req, res) => {
   try {
-      console.log("in this");
+      console.log("in getChats");
       const data = await chatHandler.getListOfChats(req);
       if (data.success){
         return res.status(200).json(data);

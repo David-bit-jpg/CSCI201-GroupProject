@@ -12,62 +12,121 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const location = useLocation();
-  const chatID = location.state?.chatData[0].chat_id || {}; // Access the state from the location
-  const chatInfo = location.state?.chatData[0].user_info || {}; // Access the state from the location
+  const chatID = useParams().chatID; 
+  console.log("CHECKING IF IT WORKS" , chatID)
+  console.log(location)
+  const chatInfo = location.state?.chatData[0];
+   // Access the state from the location
+  
   const { userEmail } = useUser();
   console.log(userEmail)
 
-//   useEffect(() => {
-//     console.log("hereeee")
-//     const channel = supabase
-//       .channel("*")
-//       .on(
-//         "postgres_changes",
-//         {
-//           event: 'INSERT',
-//           schema: 'public',
-//           table: 'Chat',
-//           columns: ['chatID, messageContent, userID, userIDs']
-//         },
-//         (payload) => {
-//             if (payload.new.chatID === chatID) {
-//                 handleNewTask(payload.new.messageContent, payload.new.userID);
-//             }
-//         }
-//       )
-//       .subscribe();
+  useEffect(() => {
+    const fetchInitialMessages = async () => {
+      try {
+        console.log(chatID)
+        let { data: returnedMessage, error: err  } = await supabase
+          .from('Chat')
+          .select('messageContent, userID, messageID')
+          .eq('chatID', chatID);
 
-//     return () => {
-//       supabase.removeChannel(channel);
-//     };
-//   }, [supabase]);
+          if (err){
+            return {success: false}
+          }
+          if (returnedMessage > 0){
+          console.log("this is what is returned", returnedMessage)
+          
+
+          const response = await fetch('http://localhost:3000/api/getUserInfo', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userEmail: userEmail,
+              // Add other necessary fields
+            }),
+          });
+        
+      
+          const data = await response.json();
+          console.log(data)
+          if (data.success){
+
+        console.log(data)
 
 
-  const channel = supabase
-      .channel("*")
+       
+        if (data) {
+            let formattedMessages = [];
+            for (const message of returnedMessage){
+                let { data: returnedMessage, error: err  } = await supabase
+                .from('User')
+                .select('username')
+                .eq('userID', message.userID);
+
+                const createMessage = {
+                    id: message.messageID,
+                    senderID: returnedMessage[0].username, // Assuming userID is the sender's ID
+                    messageContent: message.messageContent,
+                    isSender: message.userID === data.data.user_id,
+                }
+                formattedMessages.push(createMessage)
+      
+            }
+            setMessages(formattedMessages);
+         
+        }
+      
+    }
+    }} catch (error) {
+        console.error('An error occurred while fetching initial messages:', error.message);
+      }
+    };
+
+    fetchInitialMessages();
+  }, [chatID, supabase, userEmail]);
+
+  useEffect(() => {
+    console.log(location)
+    console.log('Subscribing to channel');
+    const channel = supabase
+      .channel('*')
       .on(
-        "postgres_changes",
+        'postgres_changes',
         {
-          event: 'INSERT',
+          event: '*',
           schema: 'public',
           table: 'Chat',
-          columns: ['chatID, messageContent, userID, userIDs']
+          columns: ['chatID, messageContent, userID, userIDs, messageID'],
         },
         (payload) => {
             if (payload.new.chatID === chatID) {
-                console.log("in this")
-                handleNewTask(payload.new.messageContent, payload.new.userID);
-            }
+          handleNewTask(payload.new.messageContent, payload.new.userID, payload.new.messageID);
+        }
         }
       )
       .subscribe();
+  
+    // Cleanup function to unsubscribe from the channel when the component is unmounted
+    return () => {
+      console.log('Unsubscribing from channel');
+      supabase.removeChannel(channel);
+    };
+  }, []); // Empty dependency array, meaning the effect runs once after the initial render
+  
 
 
 
 
-const handleNewTask = async (newChat, senderID) => {
+
+
+
+
+
+const handleNewTask = async (newChat, senderID, messageID) => {
         try {
-            console.log("in the front end", userEmail)
+            console.log("in the front end", userEmail, messageID)
           // Assuming you have a field like senderUserID in your newChat object
           const response = await fetch('http://localhost:3000/api/getUserInfo', {
             method: 'POST',
@@ -87,6 +146,7 @@ const handleNewTask = async (newChat, senderID) => {
 
           const isSender = senderID === data.data.user_id;
           const message = {
+            id: messageID,
             senderID: data.data.username,
             messageContent: newChat,
             isSender: isSender,
@@ -126,6 +186,7 @@ const handleNewTask = async (newChat, senderID) => {
         }
       }
       console.log(chatID, userEmail, recievers, newMessage)
+    
       const response = await fetch('http://localhost:3000/api/sendChat', {
         method: 'POST',
         headers: {
@@ -169,6 +230,8 @@ const handleNewTask = async (newChat, senderID) => {
             {/* Display messages with sender information */}
             {messages.map((message) => (
               <div
+                key={message.id}  // <-- Assuming "id" is a unique identifier
+
                 style={{
                   textAlign: message.isSender ? 'right' : 'left',
                   margin: '5px 0',

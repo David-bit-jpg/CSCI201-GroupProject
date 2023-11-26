@@ -50,6 +50,9 @@ const ContactList = () => {
       <Link to="/select-contacts">
         <button>Select Contact</button>
       </Link>
+      <Link to="/seeChat">
+        <button>See Chats</button>
+      </Link>
 
     </div>
   );

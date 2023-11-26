@@ -24,6 +24,7 @@ class chatHandler {
                     fname: data[0].fname,
                     lname: data[0].lname,
                     email: data[0].email,
+
                 };
                 const item = {
                     key: data[0].email,
@@ -73,7 +74,7 @@ class chatHandler {
                     console.error(`Error updating user ${userId}: ${userError.message}`);
                 }
                 console.log(userData)
-                const userArr = userData[0].user_id || [];
+                const userArr = userData[0].chatids || [];
                 console.log(userArr)
                 userArr.push(chatData[0].chat_id)
                 const { response, error: updateError1 } = await supabase.from('User')
@@ -136,17 +137,19 @@ class chatHandler {
 
             recievArr.push(findReceiver[0].user_id);
         }
+        
 
-
-        const { data, error } = await supabase
+        let { data: insertData, error: err  } = await supabase
         .from('Chat')
-        .insert([
+        .upsert([
             { "chatID": chat_id, "userID": findSender[0].user_id, "messageContent": message, "userIDs": recievArr},
         ])
         .select()
-        console.log("we added it" , data)
+        
 
-        if (error){
+        console.log("we added it" , insertData)
+
+        if (err){
             return {success: false, error: error.message}
         }
 
@@ -163,7 +166,7 @@ class chatHandler {
 
     async getListOfChats(req, res){
         const {email} = req.body;
-
+        console.log(email, "HEREEEEE")
         let { data: findChats, errorSend } = await supabase
         .from('User')
         .select("chatids")
@@ -191,8 +194,8 @@ class chatHandler {
 
         }
         
-
-        return {success:true, response: arrOfChats}
+        console.log("This is backend", arrOfChats)
+        return {success:true, response: arrOfChats, ids: arrOfChatIds}
 
 
     }
