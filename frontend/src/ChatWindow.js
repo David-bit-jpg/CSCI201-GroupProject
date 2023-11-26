@@ -24,17 +24,19 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
   useEffect(() => {
     const fetchInitialMessages = async () => {
       try {
-        console.log(chatID)
+        console.log("THIS IS CHAT", chatID)
         let { data: returnedMessage, error: err  } = await supabase
           .from('Chat')
           .select('messageContent, userID, messageID')
           .eq('chatID', chatID);
 
+          console.log(returnedMessage)
+
+
           if (err){
             return {success: false}
           }
-          if (returnedMessage > 0){
-          console.log("this is what is returned", returnedMessage)
+         
           
 
           const response = await fetch('http://localhost:3000/api/getUserInfo', {
@@ -50,7 +52,7 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
         
       
           const data = await response.json();
-          console.log(data)
+          console.log("this is thte data" , data)
           if (data.success){
 
         console.log(data)
@@ -60,14 +62,17 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
         if (data) {
             let formattedMessages = [];
             for (const message of returnedMessage){
-                let { data: returnedMessage, error: err  } = await supabase
+                console.log("this is message", message.userID)
+                let { data: userName, error: err  } = await supabase
                 .from('User')
                 .select('username')
-                .eq('userID', message.userID);
+                .eq('user_id', message.userID);
+
+                console.log("this is user", userName)
 
                 const createMessage = {
                     id: message.messageID,
-                    senderID: returnedMessage[0].username, // Assuming userID is the sender's ID
+                    senderID: userName[0].username, // Assuming userID is the sender's ID
                     messageContent: message.messageContent,
                     isSender: message.userID === data.data.user_id,
                 }
@@ -79,7 +84,7 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
         }
       
     }
-    }} catch (error) {
+    } catch (error) {
         console.error('An error occurred while fetching initial messages:', error.message);
       }
     };
@@ -88,7 +93,7 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
   }, [chatID, supabase, userEmail]);
 
   useEffect(() => {
-    console.log(location)
+    console.log("THIS IS OUR CHATID" , chatID)
     console.log('Subscribing to channel');
     const channel = supabase
       .channel('*')
@@ -97,13 +102,12 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
         {
           event: '*',
           schema: 'public',
-          table: 'Chat',
-          columns: ['chatID, messageContent, userID, userIDs, messageID'],
+          table: 'Chat'
         },
         (payload) => {
             if (payload.new.chatID === chatID) {
-          handleNewTask(payload.new.messageContent, payload.new.userID, payload.new.messageID);
-        }
+                handleNewTask(payload.new.messageContent, payload.new.userID, payload.new.messageID);
+            }
         }
       )
       .subscribe();
@@ -140,9 +144,10 @@ const handleNewTask = async (newChat, senderID, messageID) => {
           });
       
           const data = await response.json();
+          
           if (data.success){
 
-        console.log(data)
+            console.log("it was successful" ,data)
 
           const isSender = senderID === data.data.user_id;
           const message = {
@@ -154,6 +159,7 @@ const handleNewTask = async (newChat, senderID, messageID) => {
       
           // Update the messages state with the new message
           setMessages((prevMessages) => [...prevMessages, message]);
+          console.log(messages)
           }
         } catch (error) {
           console.error('An error occurred while fetching data:', error.message);
@@ -170,6 +176,7 @@ const handleNewTask = async (newChat, senderID, messageID) => {
 
   const handleSendMessage = async () => {
     try {
+        console.log("in send message")
         console.log(location)
         console.log(chatID)
         console.log(chatInfo)
