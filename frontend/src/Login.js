@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Make sure to install axios using `npm install axios` or `yarn add axios`
 import { useUser } from './UserContext';
+import './Styling.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -44,13 +45,11 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <label>
-          Email:
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input type="email" id="email" placeholder="  Email Address" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
         <br />
         <label>
-          Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input type="password" id="password" placeholder="  Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
         <br />
         <button type="submit">Login</button>
@@ -58,7 +57,6 @@ const Login = () => {
       {loginStatus !== null && (
         <p>{loginStatus ? 'Login successful!' : 'Login failed. Please check your credentials.'}</p>
       )}
-        {/* Add a Link to the Register page */}
         <p>Don't have an account? <Link to="/register">Register</Link></p>
     </div>
   );

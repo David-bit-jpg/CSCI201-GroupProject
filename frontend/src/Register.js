@@ -1,6 +1,7 @@
 // Register.js
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Styling.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -36,28 +37,23 @@ const Register = () => {
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <label>
-          Username:
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <input type="text" placeholder="  Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         </label>
         <br />
         <label>
-          Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input type="password" placeholder="  Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
         <br />
         <label>
-          First Name:
-          <input type="text" value={fname} onChange={(e) => setFname(e.target.value)} required />
+          <input type="text" placeholder="  First Name" value={fname} onChange={(e) => setFname(e.target.value)} required />
         </label>
         <br />
         <label>
-          Last Name:
-          <input type="text" value={lname} onChange={(e) => setLname(e.target.value)} required />
+          <input type="text" placeholder="  Last Name" value={lname} onChange={(e) => setLname(e.target.value)} required />
         </label>
         <br />
         <label>
-          Email:
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input type="Email" id="email" placeholder="  Email Address" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
         <br />
         <button type="submit">Register</button>

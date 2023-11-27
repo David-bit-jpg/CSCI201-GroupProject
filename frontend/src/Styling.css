@@ -1,0 +1,51 @@
+body {
+  background-color: #bcc6b9; 
+  font-family: Arial, sans-serif; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  height: 100vh; 
+  text-align: center; 
+}
+
+div {
+  width: 100%; 
+}
+
+h2{
+  font-size: 40px; 
+  margin-bottom: 100px;
+}
+label, p {
+  font-size: 20px; /* Increase the size of the text */
+  margin-bottom: 50px; /* Adds more space between each text element */
+}
+
+input {
+  font-size: 20px; /* Increase the size of input text */
+  margin-bottom: 20px; /* Adds space below the input fields */
+  border-radius: 30px;
+}
+
+button {
+  font-size: 20px;
+  background-color: #EAE677; 
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049; 
+}
+
+Link {
+  color: #007bff; 
+  text-decoration: none;
+}
+
+Link:hover {
+  text-decoration: underline;
+}
