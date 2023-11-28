@@ -13,13 +13,10 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
   const [newMessage, setNewMessage] = useState('');
   const location = useLocation();
   const chatID = useParams().chatID; 
-  console.log("CHECKING IF IT WORKS" , chatID)
-  console.log(location)
   const chatInfo = location.state?.chatData[0];
    // Access the state from the location
   
   const { userEmail } = useUser();
-  console.log(userEmail)
 
   useEffect(() => {
     const fetchInitialMessages = async () => {

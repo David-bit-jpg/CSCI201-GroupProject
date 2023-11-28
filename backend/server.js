@@ -111,7 +111,7 @@ require("dotenv").config();
   app.post("/api/addContact", async (req, res) => {
     try {
         console.log("in this");
-        const data = await chatHandler.addContact(req);
+        const data = await userController.addContact(req);
         if (data.status){
           return res.status(200).json(data);
         }

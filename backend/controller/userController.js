@@ -95,20 +95,15 @@ class userController {
       const { username, email, fname, lname } = req.body;
   
       console.log(email);
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-  
-      if (userError) {
-        console.error('Error fetching user data:', userError.message);
-        return {
-          status: "internal server error",
-          error: userError,
-        };
-      }
+      const { data: { user } } = await supabase.auth.getUser();
+
+      console.log(user)
   
       const { data: friendData, error: friendError } = await supabase
         .from('User')
         .select('friend_ids')
         .eq('user_id', user.id);
+        console.log("in the add contact" , friendData)
   
       if (friendError) {
         console.error('Error fetching friend data:', friendError.message);
@@ -154,6 +149,7 @@ class userController {
   
       const secondFriendsIdArray = otherFriendData[0].friend_ids || [];
       secondFriendsIdArray.push(user.id);
+      console.log(secondFriendsIdArray)
   
       const { response, error: updateError1 } = await supabase.from('User')
         .update({ friend_ids: friendIds })
