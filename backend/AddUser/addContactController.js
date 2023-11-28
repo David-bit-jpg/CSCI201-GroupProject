@@ -1,8 +1,6 @@
-// Import the database connection module
 const db = require('../db');
 
 function addFriend(userId, friendUserId, callback) {
-    // Check if the user exists
     const checkUserQuery = `SELECT COUNT(*) AS userCount FROM User WHERE userID='${userId}'`;
 
     db.performQuery(checkUserQuery, (error, userResult) => {
@@ -12,7 +10,6 @@ function addFriend(userId, friendUserId, callback) {
         }
 
         if (userResult[0].userCount > 0) {
-            // Check if the friendUserID is already in the Friend table
             const checkFriendQuery = `SELECT COUNT(*) AS friendCount FROM Friend WHERE friendUserID='${friendUserId}'`;
 
             db.performQuery(checkFriendQuery, (error, friendResult) => {
@@ -22,11 +19,9 @@ function addFriend(userId, friendUserId, callback) {
                 }
 
                 if (friendResult[0].friendCount > 0) {
-                    return callback(false); // User is already a friend
+                    return callback(false);
                 }
-
-                // Add the friend to the Friend table
-                const addFriendQuery = `INSERT INTO Friend (userID, friendUserID, friendDate) VALUES ('${userId}', '${friendUserId}', NOW())`;
+                const addFriendQuery = `INSERT INTO Friend (friendUserID,userID, friendDate) VALUES ( '${friendUserId}','${userId}', NOW())`;
 
                 db.performQuery(addFriendQuery, (error, insertResult) => {
                     if (error) {
@@ -38,14 +33,14 @@ function addFriend(userId, friendUserId, callback) {
                 });
             });
         } else {
-            return callback(false); // User does not exist
+            return callback(false); 
         }
     });
 }
 
-db.connectToDatabase(); // Connect to the database
+db.connectToDatabase();
 
 addFriend('userId1', 'friendUserId1', (result) => {
     console.log('Friend added:', result);
-    db.closeConnection(); // Close the database connection after usage
+    db.closeConnection();
 });
