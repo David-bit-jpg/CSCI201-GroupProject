@@ -2,13 +2,16 @@
 
 
 
-import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { useUser } from './UserContext';
 import { createClient } from '@supabase/supabase-js';
+import React, { useState, useEffect, useRef } from 'react';
+
 
 const ChatWindow = () => {
+const lastMessageRef = useRef(null);
+
 const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvcWV4ZGF4Y3p4c2RzeG9rbHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDA3NzA4NzksImV4cCI6MjAxNjM0Njg3OX0.jorES7lU3OsMcVO-kDwCrK7NzjXy9Li6wcek3_wavWM")
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
@@ -88,7 +91,7 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
     };
 
     fetchInitialMessages();
-  }, [chatID, supabase, userEmail]);
+  }, []);
 
   useEffect(() => {
     console.log("THIS IS OUR CHATID" , chatID)
@@ -157,6 +160,7 @@ const handleNewTask = async (newChat, senderID, messageID) => {
       
           // Update the messages state with the new message
           setMessages((prevMessages) => [...prevMessages, message]);
+          
           console.log(messages)
           }
         } catch (error) {
@@ -170,7 +174,12 @@ const handleNewTask = async (newChat, senderID, messageID) => {
    
   };
 
-
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      console.log("SCROLLING");
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const handleSendMessage = async () => {
     try {
@@ -210,7 +219,10 @@ const handleNewTask = async (newChat, senderID, messageID) => {
       if (data.success) {
         // Refresh messages after sending a new message
         // fetchChatMessages();
+
         console.log("we added a chat")
+        setNewMessage('');
+
       } else {
         console.error('Failed to send message:', data.error);
       }
@@ -220,29 +232,41 @@ const handleNewTask = async (newChat, senderID, messageID) => {
   };
 
   return (
-
     <div style={{ maxWidth: '600px', margin: 'auto' }}>
-    <h2 style={{ textAlign: 'center', margin: '20px 0' }}>Chat Window</h2>
-    <div style={{ border: '1px solid #ddd', backgroundColor: 'white', borderRadius: '5px', padding: '10px', maxHeight: '400px ', overflowY: 'auto' }}>
-      {/* Display messages with sender information */}
-      {messages.map((message) => (
-        <div
-          key={message.id} // Assuming "id" is a unique identifier
-          style={{
-            textAlign: message.isSender ? 'right' : 'left',
-            margin: '10px 0',
-          }}
-        >
-          <div style={{ display: 'inline-block' }}>
-            <div
-              style={{
-                fontSize: '0.9em',
-                color: '#888',
-                marginBottom: '2px',
-              }}
-            >
-              {message.senderID}
-            </div>
+      <h2 style={{ textAlign: 'center', margin: '20px 0' }}>Chat Window</h2>
+      <div
+        style={{
+          border: '1px solid #ddd',
+          backgroundColor: 'white',
+          borderRadius: '5px',
+          padding: '10px',
+          maxHeight: '400px',
+          overflowY: 'auto',
+        }}
+      >
+        {/* Display messages with sender information */}
+        {messages.map((message, index) => (
+          <div
+            key={message.id}
+            ref={index === messages.length - 1 ? lastMessageRef : null} // Set ref for the last message
+
+            style={{
+              textAlign: message.isSender ? 'right' : 'left',
+              margin: '10px 0',
+              display: 'flex',
+              justifyContent: message.isSender ? 'flex-end' : 'flex-start',
+            }}
+          >
+            <div style={{ maxWidth: '80%' }}>
+              <div
+                style={{
+                  fontSize: '0.9em',
+                  color: '#888',
+                  marginBottom: '2px',
+                }}
+              >
+                {message.senderID}
+              </div>
               <div
                 style={{
                   padding: '8px',
@@ -250,6 +274,10 @@ const handleNewTask = async (newChat, senderID, messageID) => {
                   backgroundColor: message.isSender ? '#007bff' : '#f2f2f2',
                   color: message.isSender ? 'white' : 'black',
                   wordBreak: 'break-word',
+                  maxWidth: '70%', // Set maximum width
+                  width: 'fit-content', // Adjust to 'fit-content'
+
+                  display: 'inline-block',
                 }}
               >
                 {message.messageContent}
@@ -258,24 +286,25 @@ const handleNewTask = async (newChat, senderID, messageID) => {
           </div>
         ))}
       </div>
-          <div style={{ marginTop: '10px' }}>
-            {/* Input for new messages */}
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              style={{ width: '80%', padding: '5px' }}
-            />
-            <button
-              onClick={handleSendMessage}
-              
-              style={{ padding: '5px', marginLeft: '5px' }}
-            >
-              Send
-            </button>
-          </div>
-        </div>
-      );
+      <div style={{ marginTop: '10px' }}>
+        {/* Input for new messages */}
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          style={{ width: '80%', padding: '5px' }}
+        />
+        <button
+          onClick={handleSendMessage}
+          style={{ padding: '5px', marginLeft: '5px' }}
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
+  
+  
     };
     
     export default ChatWindow;

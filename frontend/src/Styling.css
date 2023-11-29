@@ -1,6 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans&family=Geologica:wght@100&family=Space+Grotesk&display=swap');
 body {
   background-color: #bcc6b9; 
-  font-family: Arial, sans-serif; 
+  font-family: 'Space Grotesk', sans-serif;
   display: flex; 
   justify-content: center; 
   align-items: center; 
