@@ -35,15 +35,17 @@ const ContactList = () => {
   }, [userEmail]); // Trigger the effect whenever userEmail changes
   
   return (
-    <div>
-      <h2>Contact List for {userEmail}</h2>
-      <ul>
+    <div style={{ maxWidth: '600px', margin: 'auto' }}>
+      <h2 style={{ color: '#333', textAlign: 'center', marginBottom: '20px' }}>Contact List for {userEmail}</h2>
+      <div style={{ maxHeight: '20%', overflowY: 'auto',  alignItems: 'center',marginLeft :'24%' }}>
+      <ul style={{ listStyle: 'none', padding: 0 }}>
         {contacts.map(contact => (
-          <li key={contact.email}>
+          <li key={contact.email} style={{ backgroundColor: '#fff' , marginBottom: '10px', padding: '10px', borderRadius: '5px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)', width:'50%'}}>
             {contact.username} - {contact.email}
           </li>
         ))}
       </ul>
+      </div>
       <Link to="/addContact">
         <button>Add Contact</button>
       </Link>

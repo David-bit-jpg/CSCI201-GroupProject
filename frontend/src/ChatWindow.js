@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { useUser } from './UserContext';
 import { createClient } from '@supabase/supabase-js';
+
 const ChatWindow = () => {
 const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvcWV4ZGF4Y3p4c2RzeG9rbHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDA3NzA4NzksImV4cCI6MjAxNjM0Njg3OX0.jorES7lU3OsMcVO-kDwCrK7NzjXy9Li6wcek3_wavWM")
   const [messages, setMessages] = useState([]);
@@ -220,41 +221,43 @@ const handleNewTask = async (newChat, senderID, messageID) => {
 
   return (
 
-        <div style={{ maxWidth: '600px', margin: 'auto' }}>
-          <h2>Chat Window</h2>
-          <div
-            style={{
-              border: '1px solid #ccc',
-              padding: '10px',
-              borderRadius: '5px',
-              minHeight: '300px',
-              overflowY: 'auto',
-            }}
-          >
-            {/* Display messages with sender information */}
-            {messages.map((message) => (
+    <div style={{ maxWidth: '600px', margin: 'auto' }}>
+    <h2 style={{ textAlign: 'center', margin: '20px 0' }}>Chat Window</h2>
+    <div style={{ border: '1px solid #ddd', backgroundColor: 'white', borderRadius: '5px', padding: '10px', maxHeight: '400px ', overflowY: 'auto' }}>
+      {/* Display messages with sender information */}
+      {messages.map((message) => (
+        <div
+          key={message.id} // Assuming "id" is a unique identifier
+          style={{
+            textAlign: message.isSender ? 'right' : 'left',
+            margin: '10px 0',
+          }}
+        >
+          <div style={{ display: 'inline-block' }}>
+            <div
+              style={{
+                fontSize: '0.9em',
+                color: '#888',
+                marginBottom: '2px',
+              }}
+            >
+              {message.senderID}
+            </div>
               <div
-                key={message.id}  // <-- Assuming "id" is a unique identifier
-
                 style={{
-                  textAlign: message.isSender ? 'right' : 'left',
-                  margin: '5px 0',
+                  padding: '8px',
+                  borderRadius: '10px',
+                  backgroundColor: message.isSender ? '#007bff' : '#f2f2f2',
+                  color: message.isSender ? 'white' : 'black',
+                  wordBreak: 'break-word',
                 }}
               >
-                <div
-                  style={{
-                    display: 'inline-block',
-                    padding: '8px',
-                    borderRadius: '8px',
-                    background: message.isSender ? '#007bff' : '#f2f2f2',
-                    color: message.isSender ? 'white' : 'black',
-                  }}
-                >
-                  {message.senderID}: {message.messageContent}
-                </div>
+                {message.messageContent}
               </div>
-            ))}
+            </div>
           </div>
+        ))}
+      </div>
           <div style={{ marginTop: '10px' }}>
             {/* Input for new messages */}
             <input
@@ -265,6 +268,7 @@ const handleNewTask = async (newChat, senderID, messageID) => {
             />
             <button
               onClick={handleSendMessage}
+              
               style={{ padding: '5px', marginLeft: '5px' }}
             >
               Send

@@ -46,18 +46,20 @@ const ChatList = () => {
   };
 
   return (
-    <div>
-      <h2>List of Chats</h2>
-      <ul>
-        {chats.map((chat, index) => (
-        <li key={index}>
-          {chat.map((user) => user.value.fname).join(', ')}
-          <button onClick={() => handleChatClick(setChatIDs[index])}>Open Chat</button>
-        </li>
-        ))}
-
+    <div style={{ maxWidth: '600px', margin: 'auto' }}>
+      <h2 style={{ color: '#333', textAlign: 'center', marginBottom: '20px' }}>List of Chats</h2>
+      <div style={{ maxHeight: '40%', overflowY: 'auto',  alignItems: 'center',marginLeft :'24%' }}>
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+          {chats.map((chat, index) => (
+              <li key={index} style={{ backgroundColor: '#fff' , marginBottom: '10px', padding: '10px', borderRadius: '5px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)', width:'50%'}}>
+                  {chat.map((user) => user.value.fname).join(', ')}
+                  <button onClick={() => handleChatClick(setChatIDs[index])} style={{ marginLeft: '10px', padding: '5px 10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Open Chat</button>
+              </li>
+          ))}
       </ul>
     </div>
+  </div>
+
   );
 };
 
