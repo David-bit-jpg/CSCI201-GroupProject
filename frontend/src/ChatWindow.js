@@ -19,7 +19,8 @@ const supabase = createClient('https://yoqexdaxczxsdsxoklqr.supabase.co', "eyJhb
   const [newMessage, setNewMessage] = useState('');
   const location = useLocation();
   const chatID = useParams().chatID; 
-  const chatInfo = location.state?.chatData[0];
+  console.log(location.state)
+  const chatInfo = location.state?.chatData;
    // Access the state from the location
   
   const { userEmail } = useUser();

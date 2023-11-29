@@ -41,9 +41,9 @@ const ChatList = () => {
     getListOfChats();
   }, [userEmail]);
 
-  const handleChatClick = (chatID) => {
+  const handleChatClick = (chatID, index) => {
     // Redirect to the chat window for the specific chat
-    navigate(`/ChatWindow/${chatID}`, { state: { chatData: chats } });
+    navigate(`/ChatWindow/${chatID}`, { state: { chatData: chats[index] } });
   };
 
   return (
@@ -56,7 +56,7 @@ const ChatList = () => {
           {chats.map((chat, index) => (
               <li key={index} style={{ backgroundColor: '#fff' , marginBottom: '10px', padding: '10px', borderRadius: '5px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)', width:'50%'}}>
                   {chat.map((user) => user.value.fname).join(', ')}
-                  <button onClick={() => handleChatClick(setChatIDs[index])} style={{ marginLeft: '10px', padding: '5px 10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Open Chat</button>
+                  <button onClick={() => handleChatClick(setChatIDs[index], index)} style={{ marginLeft: '10px', padding: '5px 10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '3px', cursor: 'pointer' }}>Open Chat</button>
               </li>
           ))}
       </ul>

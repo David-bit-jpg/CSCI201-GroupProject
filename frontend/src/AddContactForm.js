@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import Navbar from './NavBar'; // Import the Navbar component
+import {useNavigate} from 'react-router-dom';
+
 
 
 const AddContactForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -35,6 +39,9 @@ const AddContactForm = () => {
 
       const result = await response.json();
       console.log(result); // Handle the response as needed
+      if (result.status){
+        navigate('/getContacts')
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
     }

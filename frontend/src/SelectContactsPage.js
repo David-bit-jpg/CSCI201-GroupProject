@@ -61,9 +61,8 @@ const SelectContactsPage = () => {
       console.log(data)
       if (data.success) {
         console.log('Chat created successfully');
-        console.log(data.chatData)
         // Redirect to the chat page or do other actions as needed
-        navigate(`/ChatWindow/${data.chatData[0].chatID}`, { state: { chatData: data.chatData[0].user_info } });
+        navigate(`/ChatWindow/${data.chatData[0].chat_id}`, { state: { chatData: data.chatData[0].user_info } });
       } else {
         console.error('Failed to create chat:', data.error);
       }

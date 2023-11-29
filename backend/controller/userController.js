@@ -31,7 +31,6 @@ class userController {
 
   async createUser(req, res){
     try {
-      console.log("IN HERE")
       const {username, password, fname, lname, email} = req.body
       const { data, error } = await supabase.auth.signUp({
           email,
@@ -39,9 +38,8 @@ class userController {
       })
       console.log("after sign in")
       if (error){
-          console.log(error);
-          console.log(data);
-          return res.status(400).json({msg:"Could not register"});
+   
+          return {success:false, response};
           // throw new Error("Can't register", error);
     }   
       const user_id = data.user.id;
@@ -51,8 +49,9 @@ class userController {
 
       if (response.error){
           console.log(response.error)
-          return res.status(400).json({msg:"Bad body!"})
-      }    
+          return {success: false, response}
+      }
+          
       return {success: true, response};  
   } catch (error) {
       console.log(error);

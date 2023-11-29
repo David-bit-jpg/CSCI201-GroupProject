@@ -28,8 +28,7 @@ const App = () => {
           <Route path="/seeChat" element={<ChatList />} />
 
 
-          {/* <Route path="/crud" element={<CRUD />} /> */}
-          {/* <Route path="/edit/:id" element={<Edit/>} /> */}
+          
 
           <Route
             path=""
