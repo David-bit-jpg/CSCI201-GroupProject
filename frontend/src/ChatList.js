@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './UserContext'; // Assuming you have a UserContext to get user details
+import Navbar from './NavBar'; // Import the Navbar component
+
 
 const ChatList = () => {
   const { userEmail } = useUser(); // Use the UserContext to get user details
@@ -11,7 +13,6 @@ const ChatList = () => {
   useEffect(() => {
     const getListOfChats = async () => {
       try {
-        console.log('here',userEmail)
         const response = await fetch('http://localhost:3000/api/getChats', {
           method: 'POST',
           headers: {
@@ -46,6 +47,8 @@ const ChatList = () => {
   };
 
   return (
+    <div> 
+      <Navbar/>
     <div style={{ maxWidth: '600px', margin: 'auto' }}>
       <h2 style={{ color: '#333', textAlign: 'center', marginBottom: '20px' }}>List of Chats</h2>
       <div style={{ maxHeight: '40%', overflowY: 'auto',  alignItems: 'center',marginLeft :'24%' }}>
@@ -58,6 +61,7 @@ const ChatList = () => {
           ))}
       </ul>
     </div>
+  </div>
   </div>
 
   );

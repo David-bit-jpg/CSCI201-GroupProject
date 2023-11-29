@@ -25,8 +25,7 @@ const Login = () => {
       const result = response.data;
 
       setLoginStatus(result.data);
-
-      if (result.data) {
+      if (result.data.data) {
         setUser(email); // Set the user email in the context
 
         // If login is successful, set the login status and redirect to "/addContact"

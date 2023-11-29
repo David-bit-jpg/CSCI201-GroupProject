@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import { useUser } from './UserContext';
+import Navbar from './NavBar'; // Import the Navbar component
 
 const ContactList = () => {
   const [contacts, setContacts] = useState([]);
@@ -35,6 +36,8 @@ const ContactList = () => {
   }, [userEmail]); // Trigger the effect whenever userEmail changes
   
   return (
+    <div>
+      <Navbar/>
     <div style={{ maxWidth: '600px', margin: 'auto' }}>
       <h2 style={{ color: '#333', textAlign: 'center', marginBottom: '20px' }}>Contact List for {userEmail}</h2>
       <div style={{ maxHeight: '20%', overflowY: 'auto',  alignItems: 'center',marginLeft :'24%' }}>
@@ -56,6 +59,7 @@ const ContactList = () => {
         <button>See Chats</button>
       </Link>
 
+    </div>
     </div>
   );
 };

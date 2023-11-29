@@ -7,6 +7,8 @@ import { useLocation } from 'react-router-dom';
 import { useUser } from './UserContext';
 import { createClient } from '@supabase/supabase-js';
 import React, { useState, useEffect, useRef } from 'react';
+import Navbar from './NavBar'; // Import the Navbar component
+
 
 
 const ChatWindow = () => {
@@ -232,7 +234,11 @@ const handleNewTask = async (newChat, senderID, messageID) => {
   };
 
   return (
+    <div>
+
+    <Navbar/> 
     <div style={{ maxWidth: '600px', margin: 'auto' }}>
+
       <h2 style={{ textAlign: 'center', margin: '20px 0' }}>Chat Window</h2>
       <div
         style={{
@@ -302,9 +308,10 @@ const handleNewTask = async (newChat, senderID, messageID) => {
         </button>
       </div>
     </div>
+    </div>
   );
   
   
-    };
+  };
     
     export default ChatWindow;

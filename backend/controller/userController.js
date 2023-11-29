@@ -15,7 +15,7 @@ class userController {
       email,
       password,
     });
-
+    console.log(data)
     if (error) {
       console.error("Login error:", error);
       return {data: false};

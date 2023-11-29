@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Navbar from './NavBar'; // Import the Navbar component
+
 
 const AddContactForm = () => {
   const [formData, setFormData] = useState({
@@ -38,6 +40,8 @@ const AddContactForm = () => {
     }
   };
   return (
+    <div>
+      <Navbar/>
     <form onSubmit={handleSubmit}>
       <label>
         Username:
@@ -89,6 +93,7 @@ const AddContactForm = () => {
 
       <button type="submit">Submit</button>
     </form>
+    </div>
   );
 };
 

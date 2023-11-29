@@ -1,6 +1,8 @@
 // Register.js
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link} from 'react-router-dom';
+
 import './Styling.css';
 
 const Register = () => {
@@ -57,7 +59,11 @@ const Register = () => {
         </label>
         <br />
         <button type="submit">Register</button>
+        
       </form>
+      <p>Have an account? <Link to="/login">Login</Link></p>
+
+
       {registrationStatus !== null && (
         <p>{registrationStatus ? 'Registration successful!' : 'Registration failed. Please try again.'}</p>
       )}
