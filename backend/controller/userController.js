@@ -37,7 +37,7 @@ async createGuest(req, res) {
     .from('guests')
     .upsert({ chats: [] })
     .select()
-
+    console.log(data[0])
     if (error) {
       console.error("Login error:", error);
       return {success: false};

@@ -17,26 +17,22 @@ const Login = () => {
     try {
       console.log("HERE in guest");
       // Make your API call here
-      const response = await fetch('http://localhost:3000/api/createGuest', {
-        method: 'POST',
+      const response = await fetch('http://localhost:8080/JavaBackend/LoginServlet', {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-        }
-        // Additional options, headers, body, etc.
+        }        // Additional options, headers, body, etc.
       });
-
-
-      // Handle the response as needed
-      if (response.ok) {
-        const data = await response.json();
+      if (response.ok){
+        const responseData = await response.json(); // Parse the response body as JSON
         const chatID = "f4b2fdfd-82da-48a3-95bd-ba5fa0edc709";
-        const guestID = data.data[0].id
+        const guestID = responseData.data[0].id
         navigate(`/GuestChat/${chatID}/${guestID}`)
-        // Handle the data or redirect, etc.
-      } else {
-        console.error('API call failed:', response.status);
-        // Handle the error, show a message, redirect, etc.
+
       }
+
+        
+      
     } catch (error) {
       console.error('Unexpected error during API call:', error);
       // Handle the error, show a message, redirect, etc.

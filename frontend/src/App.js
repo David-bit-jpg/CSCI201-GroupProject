@@ -8,6 +8,7 @@ import SelectContactsPage from './SelectContactsPage';
 import ChatWindow from './ChatWindow';
 import ChatList from './ChatList';
 import GuestChat from './GuestChat';
+import LoginFake from './LoginFAKE';
 
 
 
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/ChatWindow/:chatID"  element={<ChatWindow />} />
           <Route path="/seeChat" element={<ChatList />} />
           <Route path="/GuestChat/:chatID/:guestID" element={<GuestChat />} />
+          <Route path="LoginFake" element={<LoginFake />} />
 
 
           
