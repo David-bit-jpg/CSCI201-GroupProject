@@ -29,6 +29,29 @@ class userController {
   }
 }
 
+async createGuest(req, res) {
+  try {
+    console.log("Logging in...");
+
+    const { data, error } = await supabase
+    .from('guests')
+    .upsert({ chats: [] })
+    .select()
+
+    if (error) {
+      console.error("Login error:", error);
+      return {success: false};
+    }
+    console.log("insertion successful " + data)
+    return {success: true, data}
+
+  } catch (error) {
+    console.error("Unexpected error during login:", error);
+    return res.status(500).json({ status: "error", message: "Internal server error" });
+  }
+}
+
+
   async createUser(req, res){
     try {
       const {username, password, fname, lname, email} = req.body

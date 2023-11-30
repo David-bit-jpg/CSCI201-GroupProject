@@ -7,6 +7,8 @@ import ContactList from './ContactsList';
 import SelectContactsPage from './SelectContactsPage';
 import ChatWindow from './ChatWindow';
 import ChatList from './ChatList';
+import GuestChat from './GuestChat';
+
 
 
 import { UserProvider } from './UserContext'; // Import UserProvider from UserContext
@@ -26,6 +28,7 @@ const App = () => {
           <Route path="/select-contacts" element={<SelectContactsPage />} />
           <Route path="/ChatWindow/:chatID"  element={<ChatWindow />} />
           <Route path="/seeChat" element={<ChatList />} />
+          <Route path="/GuestChat/:chatID/:guestID" element={<GuestChat />} />
 
 
           

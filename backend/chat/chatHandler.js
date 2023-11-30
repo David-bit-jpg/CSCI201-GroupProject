@@ -157,9 +157,21 @@ class chatHandler {
 
     }
 
-    async getChat(req, res){
+    async sendGuestChat(req, res){
+        const {chat_id, sender, message} = req.body;
 
-        
+        const { data, error } = await supabase
+        .from('Chat')
+        .upsert({ "messageContent": message, "guest_id": sender, "chatID": chat_id })
+        .select()
+
+        if (error){
+            return {success: false, message: error}
+        }
+        else{
+            return {success: true, message: "added chat"}
+
+        }
         
 
     }

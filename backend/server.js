@@ -29,42 +29,7 @@ require("dotenv").config();
 
 
 
-    // io.on('connection', (socket) => {
-    //   console.log('A user connected');
-    
-    //   // Get chatID from the user or wherever it's stored
-    //   const { chatID } = socket.handshake.query;
-    
-    //   // Join a room based on chatID
-    //   socket.join(chatID);
-    
-    //   // Additional socket.io logic...
-   
-    
 
-
-    //   const subscription = supabase
-    //   .from('Chat')
-    //   .on('INSERT', (payload) => {
-    //     console.log('Change received!', payload);
-    //     const { chatID } = payload.new; // Assuming there's a chatID field in your Chat table
-    //     // Broadcast the change to the specific client based on chatID
-    //     io.to(chatID).emit('newChatMessage', payload);
-    //   })
-    //   .subscribe();
-
-    //   socket.on('disconnect', () => {
-    //     console.log('A user disconnected');
-    //     subscription.unsubscribe();
-    //   });
-
-
-
-    // });
-  
-      // Additional socket.io logic...
-  
-      // N
 
   app.post("/api/createUser", async (req, res) => {
     try {
@@ -128,6 +93,37 @@ app.post("/api/getContacts", async (req, res) => {
   try {
       console.log("in this");
       const data = await userController.getContacts(req);
+      if (data.success){
+        return res.status(200).json(data);
+      }
+  } catch (error) {
+      res.status(500).json({
+          status: "internal server error",
+          error: error.message || "An error occurred.",
+      });
+  }
+});
+
+
+app.post("/api/createGuest", async (req, res) => {
+  try {
+      console.log("in this");
+      const data = await userController.createGuest(req);
+      if (data.success){
+        return res.status(200).json(data);
+      }
+  } catch (error) {
+      res.status(500).json({
+          status: "internal server error",
+          error: error.message || "An error occurred.",
+      });
+  }
+});
+
+app.post("/api/sendGuestChat", async (req, res) => {
+  try {
+      console.log("in this");
+      const data = await chatHandler.sendGuestChat(req);
       if (data.success){
         return res.status(200).json(data);
       }
